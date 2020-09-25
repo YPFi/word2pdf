@@ -1,0 +1,29 @@
+<form onsubmit="return false;" action="{:request()->url()}" data-auto="true" method="post" class='layui-form layui-card' autocomplete="off">
+
+    <div class="layui-card-body">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">name</label>
+            <div class="layui-input-block">
+                <input name="name" required value='{$vo.name|default=""}' placeholder="name" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">describe(Optional)</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="remake">{$vo.remake|default=''}</textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>save</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="Are you sure you want to cancel editing？" data-close>cancel</button>
+    </div>
+
+</form>

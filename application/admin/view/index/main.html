@@ -1,0 +1,46 @@
+{extend name='main'}
+
+{block name='content'}
+
+<style>
+
+    .store-total-container {
+        font-size: 20px;
+        height: 120px;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    .store-total-container .store-total-icon {
+        top: 45%;
+        right: 8%;
+        font-size: 80px;
+        position: absolute;
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .store-total-container .store-total-item {
+        color: #fff;
+        line-height: 4em;
+        padding: 15px 25px;
+        position: relative;
+    }
+
+    .store-total-container .store-total-item > div:nth-child(2) {
+        font-size: 46px;
+        line-height: 46px;
+    }
+    .layui-col-space15{
+        font-size: 40px;
+        text-align: center;
+    }
+
+</style>
+<div class="think-box-shadow store-total-container notselect">
+    <div class="margin-bottom-15">PDF</div>
+    <div class="layui-row layui-col-space15">
+        <h1>Hello Word</h1>
+    </div>
+</div>
+
+{/block}

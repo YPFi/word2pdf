@@ -1,0 +1,71 @@
+{extend name='admin@main'}
+
+{block name="button"}
+
+{if auth("pdf/template/add")}
+<button data-open='{:url("add")}' data-title="add" class='layui-btn layui-btn-sm layui-btn-primary'>Add template</button>
+{/if}
+
+{if auth("pdf/template/remove")}
+<button data-action='{:url("remove")}' data-rule="id#{key}" class='layui-btn layui-btn-sm layui-btn-primary'>Delete template</button>
+{/if}
+
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='template/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <input data-auto-none data-check-target='.list-check-box' type='checkbox'>
+            </th>
+            <th class='text-center nowrap'>name</th>
+            <th class="text-center">create at</th>
+            <th class="text-center">status</th>
+            <th class="text-center">operation</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr data-dbclick>
+            <td class='list-table-check-td think-checkbox'>
+                <input class="list-check-box" value='{$vo.id}' type='checkbox'>
+            </td>
+            <td class='text-center nowrap'>{$vo.name|default=''}</td>
+            <td class='text-center nowrap'>{$vo.create_at|format_datetime}</td>
+            <td class='text-center nowrap'>
+                {eq name='vo.status' value='0'}<span class="layui-badge">disabled</span>{else}<span class="layui-badge layui-bg-green">use</span>{/eq}<br>
+            </td>
+
+            <td class='text-center nowrap'>
+
+                {if auth("pdf/Templatetype/edit")}
+                <a data-title="Edit template type" class="layui-btn layui-btn-xs" data-open='{:url("edit")}?id={$vo.id}'>edit</a>
+                {/if}
+
+                {if $vo.status eq 1 and auth("pdf/Templatetype/forbid")}
+                <a class="layui-btn layui-btn-xs layui-btn-warm" data-action="{:url('forbid')}" data-value="id#{$vo.id};status#0">disabled</a>
+                {elseif auth("pdf/Templatetype/resume")}
+                <a class="layui-btn layui-btn-xs layui-btn-warm" data-action="{:url('resume')}" data-value="id#{$vo.id};status#1">use</a>
+                {/if}
+
+                {if auth("pdf/Templatetype/remove")}
+                <a class="layui-btn layui-btn-xs layui-btn-danger" data-confirm="Are you sure you want to delete?" data-action="{:url('remove')}" data-value="id#{$vo.id}">delete</a>
+                {/if}
+
+                {if auth("pdf/Templatetype/excel")}
+                <a class="layui-btn layui-btn-xs" href="{:url('exportExcel')}?id={$vo.id}" data-value="id#{$vo.id}">export excel</a>
+                {/if}
+
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}<span class="notdata">There is no record</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+{/block}

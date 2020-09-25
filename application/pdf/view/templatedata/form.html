@@ -1,0 +1,132 @@
+<form onsubmit="return false;" action="{:request()->url()}" enctype="multipart/form-data" data-auto="true" method="post" class='layui-form layui-card' autocomplete="off" >
+    <div class="layui-card-body" style="width: 80%;margin: 0 auto">
+        <div class="layui-form-item">
+            <label class="layui-form-label">Template Type</label>
+            <div class="layui-input-block">
+                <select  id="type" lay-verify="required" lay-filter="type">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">Template</label>
+            <div class="layui-input-block">
+                <select name="tid"  id="tpl" lay-verify="required" >
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">import Excel</label>
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-normal" id="file">选择文件</button>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit' id="save" lay-filter="save">save</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="Are you sure you want to cancel editing？" data-close>cancel</button>
+    </div>
+
+</form>
+<script>
+    layui.use(['layedit','form','upload'], function(){
+        var layedit = layui.layedit;
+        var code;
+        var $ = layui.jquery
+            ,upload = layui.upload;
+        layedit.set({
+            uploadImage: {
+                url: '{:url("images/upload")}' //接口url
+                ,type: 'post' //默认post
+            }
+        });
+        var index = layedit.build('demo',{
+            height: 480 //设置编辑器高度
+        }); //建立编辑器
+
+        upload.render({
+            elem: '#file'
+            ,url: '{:url("Templatedata/insertExcel")}' //改成您自己的上传接口
+            ,accept: 'file' //普通文件
+            ,data: {tid: function () {
+                    return $('#tpl').val()
+                }}
+            //,multiple: true
+            ,done: function(res){
+                layer.msg('update success');
+                // console.log(res)
+            }
+        });
+
+        var form = layui.form;
+        $(function () {
+            $.ajax({
+                type: 'get',
+                url: '{:url("Templatedata/getType")}',
+                data: '',
+                dataType: 'json',
+                success: (res)=>{
+                    let code = res.code
+                    let msg = res.msg
+                    if(code == 200){
+                        let html = '<option value="">Select Template Type</option>'
+                        let data = res.data
+                        data.forEach((item)=>{
+                            html += '<option value="'+item.id+'">'+item.name+'</option>'
+                        })
+                        $('#type').html(html)
+                        $('#type option').each(function () {
+                            let val = $(this).val()
+                            let isSelect = '{$vo.type|default=""}'
+                            if(val == isSelect){
+                                $(this).attr('selected',true)
+                            }
+                        })
+                        form.render(); //更新全部
+                    }
+                }
+            })
+        })
+        form.render(); //更新全部
+        form.on('select(type)', function(data){
+
+            $.ajax({
+                type: 'get',
+                url: '{:url("Templatedata/getTpl")}',
+                data: {id:data.value},
+                dataType: 'json',
+                success: (res)=>{
+                    let code = res.code
+                    let msg = res.msg
+                    if(code == 200){
+                        let html = ''
+                        let data = res.data
+                        data.forEach((item)=>{
+                            html += '<option value="'+item.id+'">'+item.name+'</option>'
+                        })
+                        $('#tpl').html(html)
+                        $('#tpl option').each(function () {
+                            let val = $(this).val()
+                            let isSelect = '{$vo.type|default=""}'
+                            if(val == isSelect){
+                                $(this).attr('selected',true)
+                            }
+                        })
+                        form.render(); //更新全部
+                    }
+                }
+            })
+        });
+
+    });
+
+</script>

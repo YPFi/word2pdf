@@ -1,0 +1,94 @@
+<form onsubmit="return false;" action="{:request()->url()}" data-auto="true" method="post" class='layui-form layui-card' autocomplete="off">
+    <div class="layui-card-body" style="width: 80%;margin: 0 auto">
+        <div style="width: 20%;margin: 20px auto">
+            <h1>Template</h1>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">name</label>
+            <div class="layui-input-block">
+                <input name="name" required value='{$vo.name|default=""}' placeholder="name" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">type</label>
+            <div class="layui-input-block">
+                <select name="type"  id="type" lay-verify="required">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">template
+                {literal}
+                    example:$name
+                {/literal}
+            </label>
+            <div class="layui-input-block">
+                <textarea id="demo" name="content" style="display: none;">{$vo.content|default=""}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">code</label>
+            <div class="layui-input-block">
+                <input type="text" name="code" placeholder="code" value="{$vo.code|default=''}" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>save</button>
+    </div>
+
+</form>
+<script>
+    layui.use(['layedit','form'], function(){
+        var layedit = layui.layedit;
+        layedit.set({
+            uploadImage: {
+                url: '{:url("images/upload")}' //接口url
+                ,type: 'post' //默认post
+            }
+        });
+        var index = layedit.build('demo',{
+            height: 480 //设置编辑器高度
+        }); //建立编辑器
+        var form = layui.form;
+        $(function () {
+            $.ajax({
+                type: 'get',
+                url: '{:url("Template/getType")}',
+                data: '',
+                dataType: 'json',
+                success: (res)=>{
+                    let code = res.code
+                    let msg = res.msg
+                    if(code == 200){
+                        let html = ''
+                        let data = res.data
+                        data.forEach((item)=>{
+                            html += '<option value="'+item.id+'">'+item.name+'</option>'
+                        })
+                        $('#type').html(html)
+                        $('#type option').each(function () {
+                            let val = $(this).val()
+                            let isSelect = '{$vo.type|default=""}'
+                            if(val == isSelect){
+                                $(this).attr('selected',true)
+                            }
+                        })
+                        form.render(); //更新全部
+                    }
+                }
+            })
+        })
+        form.render(); //更新全部
+    });
+
+</script>

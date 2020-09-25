@@ -1,0 +1,45 @@
+<fieldset>
+    <legend>Conditional search</legend>
+    <form class="layui-form layui-form-pane form-search" action="{:request()->url()}" onsubmit="return false" method="get" autocomplete="off">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">Template name</label>
+            <div class="layui-input-inline">
+                <select class="layui-select" name="tid" id="tid">
+
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">create at</label>
+            <div class="layui-input-inline">
+                <input data-date-range name="create_at" value="{$Think.get.create_at|default=''}" placeholder="create at" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> select</button>
+        </div>
+    </form>
+</fieldset>
+
+<script>
+    form.render()
+    $.ajax({
+        type: 'get',
+        url: '{:url("Templatedata/getTpls")}',
+        data: '',
+        dataType: 'json',
+        success: (res)=>{
+            let code = res.code
+            let msg = res.msg
+            if(code == 200){
+                let html = ''
+                let data = res.data
+                data.forEach((item)=>{
+                    html += '<option value="'+item.id+'">'+item.name+'</option>'
+                })
+                $('#tid').html(html)
+                form.render(); //更新全部
+            }
+        }
+    })
+</script>
